@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Erlang</title>
+<meta charset="utf-8">
+<style>
+* {
+background-color: #D6D6D6;
+}
+#nABTable {
+border-collapse: collapse;
+border: 0.5px;
+}
+#nABTable th {
+background-color: #404040;
+color: #FFFFFF;
+}
+.firstCells {
+background-color: #C9C9FF;
+}
+</style>
+<script>
+function factorial(n) {
+	return (n === 0) ? 1 : n * factorial(n - 1);
+}
+function erlang(n , A) {
+	var t = function(n, A) {return Math.pow(A, n) / factorial(n);}
+	function denominator(n, A) {
+		return (n === 0) ? t(n, A) : t(n, A) + denominator(n - 1, A);
+	}
+	return t(n, A) / denominator(n, A);
+}
+function showN() {
+	document.getElementById("nSpace").innerHTML = document.getElementById("nValue").value;
+}
+function calc() {
+	var n = Number(document.getElementById("nValue").value);
+	var A = Number(document.getElementById("AValue").value);
+	document.getElementById("BValue").innerHTML = erlang(n, A);
+}
+var data = [
+		[0.001,0.002,0.003,0.005,0.0101,0.0204,0.0309,0.0526,0.111],
+		[0.0458,0.0653,0.0806,0.105,0.153,0.223,0.282,0.381,0.595],
+		[0.194,0.249,0.289,0.349,0.455,0.602,0.715,0.899,1.27],
+		[0.439,0.535,0.602,0.701,0.869,1.09,1.26,1.52,2.05]];
+function showTable() {
+	var t = document.getElementById("nABTable");
+	for (var i = 0;i < 4;++i) {
+		var r = t.insertRow(t.rows.length);
+		for (var j = 0;j < 10;++j) {
+			var d = r.insertCell(r.cells.length);
+			if (j === 0) {
+				d.innerHTML = i + 1;
+				d.setAttribute("class", "firstCells");
+				continue;
+			}
+			d.innerHTML = data[i][j - 1] + "<br>B=" + erlang(i + 1, data[i][j - 1]).toString().substr(0, 7);
+		}
+	}
+}
+window.onload = function() {calc(); showTable();}
+</script>
+</head>
+<body>
+<h2>B function of Erlang</h2>
+<hr>
+n: 回線数, A: 呼量, B: 呼損率
+<br>
+n = <span id="nSpace">3</span>
+<input id="nValue" type="range" min="1" max="10" value="3" onchange="showN();calc()">
+<br>
+A = <input id="AValue" type="text" value="0.194" onchange="calc()">
+<br>
+B = <span id="BValue"></span>
+<hr>
+<table id="nABTable" border="1">
+		<caption><strong>損失式数表</strong></caption>
+<thead>
+<tr>
+		<th>n＼B</th>
+		<th>0.001</th>
+		<th>0.002</th>
+		<th>0.003</th>
+		<th>0.005</th>
+		<th>0.01</th>
+		<th>0.02</th>
+		<th>0.03</th>
+		<th>0.05</th>
+		<th>0.1</th>
+</tr>
+<thead>
+<tbody>
+</tbody>
+</table>
+</body>
+</html>
